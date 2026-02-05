@@ -352,5 +352,5 @@ It represents a defining feature of the HCSN framework and motivates further inv
 - Effective field descriptions around Ωc
 
 
-*End of Layer III.*
+
 

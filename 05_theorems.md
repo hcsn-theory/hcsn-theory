@@ -1,5 +1,6 @@
 # Core Axioms of HCSN
-*Hypergraph Computational / Hierarchical Causal Structure Network*
+
+Hierarchical Causal Structure Network
 
 This document presents the **axiomatic foundation** of HCSN.
 All physical structure, geometry, and dynamics must emerge from these axioms.
@@ -154,12 +155,14 @@ They are **not** assumed to reproduce known physics — that is a theorem-level 
 *End of axioms.*
 
 
-# Layer V — Theorems  
-*(Formal Consequences of the HCSN Axioms)*
+# Layer V — Theorems
+
+(Formal Consequences of the HCSN Axioms)
 
 This document states the core theorems of the Hypergraph Causal Structure Network (HCSN).
 
 Proofs are given as:
+
 - formal arguments where possible
 - proof sketches where full formalization would obscure structure
 
@@ -205,6 +208,7 @@ For any two causally related events \( a \prec b \):
 \]
 
 where:
+
 - \( d_C \) is graph distance
 - \( T \) is rewrite time
 
@@ -447,6 +451,7 @@ The universe is computable *because it must be*.
 
 | Theorem | Domain |
 |------|------|
+
 Causality | Fundamental |
 Speed limit | Emergent |
 Particles | Topological |
@@ -458,4 +463,3 @@ Time | Directional |
 
 ---
 
-*End of Layer V.*

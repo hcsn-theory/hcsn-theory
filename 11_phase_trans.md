@@ -9,9 +9,11 @@ This file supersedes all earlier informal interpretations regarding defect propa
 ## 1. What Was Assumed Before (Now Corrected)
 
 ### ❌ Incorrect Assumption A:  
+
 **Forced defects should produce detectable downstream rewrites along a causal cone.**
 
 This assumption motivated early “forced response” tests that searched for:
+
 - downstream defects
 - rewrite overlap
 - apparent Lorentz-like causal cones
@@ -24,6 +26,7 @@ All rewrite-based propagation tests correctly return *no causal cone*.
 ---
 
 ### ❌ Incorrect Assumption B:  
+
 **Ω-gradient alone should mediate propagation.**
 
 Early versions assumed that a local Ω gradient would bias rewrites in a way that propagates spatially.
@@ -43,6 +46,7 @@ They do **not** generate sustained transport or signal propagation.
 Propagation occurs **only** when a separate influence field ξ is introduced.
 
 ξ is:
+
 - seeded by forced defects
 - propagated along causal relations
 - decayed multiplicatively
@@ -136,6 +140,7 @@ The correct interpretation is:
 > HCSN supports **persistent causal transport without spatial spreading** once hierarchical closure exceeds a critical threshold.
 
 Transport is:
+
 - causal
 - bounded
 - non-geometric

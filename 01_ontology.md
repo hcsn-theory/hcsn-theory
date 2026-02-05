@@ -220,5 +220,3 @@ Particles | Persistent processes |
 Fields | Global observables |
 
 ---
-
-*End of Layer I.*

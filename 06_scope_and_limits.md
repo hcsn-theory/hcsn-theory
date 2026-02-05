@@ -231,6 +231,7 @@ It explains *why* physics looks the way it does, rather than replacing it.
 This completes the foundational HCSN theory stack.
 
 Further work belongs to:
+
 - extensions
 - phenomenology
 - simulations

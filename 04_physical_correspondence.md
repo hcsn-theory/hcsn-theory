@@ -250,4 +250,3 @@ HCSN predicts:
 
 ---
 
-*End of Layer IV.*

@@ -230,4 +230,3 @@ Max speed | Implied |
 
 ---
 
-*End of Layer II.*
