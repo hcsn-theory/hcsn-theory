@@ -1,0 +1,12 @@
+.next
+node_modules
+*.log
+.env.local
+.env
+.DS_Store
+public/uploads
+dist
+out
+*.swp
+.vscode/*
+!.vscode/settings.json

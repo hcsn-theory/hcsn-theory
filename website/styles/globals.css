@@ -1,0 +1,45 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom typography */
+@layer base {
+  h1 {
+    @apply text-4xl sm:text-5xl font-bold tracking-tight;
+  }
+
+  h2 {
+    @apply text-3xl sm:text-4xl font-semibold;
+  }
+
+  h3 {
+    @apply text-xl sm:text-2xl font-semibold;
+  }
+
+  p {
+    @apply text-base text-md-on-surface leading-relaxed;
+  }
+}
+
+/* Smooth transitions and Material Design utilities */
+@layer components {
+  .transition-base {
+    @apply transition-colors duration-200 ease-in-out;
+  }
+
+  .link-underline {
+    @apply border-b border-transparent hover:border-md-on-surface transition-base;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 rounded-lg bg-md-primary text-white font-semibold hover:opacity-90 transition-opacity;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 rounded-lg bg-neutral-200 text-md-on-surface font-semibold hover:bg-neutral-300 transition-colors;
+  }
+
+  .surface-elevated {
+    @apply bg-md-surface border border-md-outline shadow-sm rounded-lg;
+  }
+}
