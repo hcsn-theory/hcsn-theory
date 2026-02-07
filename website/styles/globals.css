@@ -2,44 +2,75 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Custom typography */
 @layer base {
-  h1 {
-    @apply text-4xl sm:text-5xl font-bold tracking-tight;
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --radius: 0.5rem;
   }
 
-  h2 {
-    @apply text-3xl sm:text-4xl font-semibold;
-  }
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-  h3 {
-    @apply text-xl sm:text-2xl font-semibold;
-  }
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
 
-  p {
-    @apply text-base text-md-on-surface leading-relaxed;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
 
-/* Smooth transitions and Material Design utilities */
-@layer components {
-  .transition-base {
-    @apply transition-colors duration-200 ease-in-out;
+@layer base {
+  * {
+    @apply border-border;
   }
-
-  .link-underline {
-    @apply border-b border-transparent hover:border-md-on-surface transition-base;
-  }
-
-  .btn-primary {
-    @apply px-4 py-2 rounded-lg bg-md-primary text-white font-semibold hover:opacity-90 transition-opacity;
-  }
-
-  .btn-secondary {
-    @apply px-4 py-2 rounded-lg bg-neutral-200 text-md-on-surface font-semibold hover:bg-neutral-300 transition-colors;
-  }
-
-  .surface-elevated {
-    @apply bg-md-surface border border-md-outline shadow-sm rounded-lg;
+  body {
+    @apply bg-background text-foreground;
   }
 }

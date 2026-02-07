@@ -57,7 +57,7 @@ export default function Figures() {
           {figures.map((fig) => (
             <Card key={fig.id}>
               {/* Placeholder image area */}
-              <div className="w-full aspect-square bg-gradient-to-br from-neutral-100 to-neutral-200 rounded-lg mb-4 flex items-center justify-center">
+              <div className="w-full aspect-square bg-muted/50 rounded-lg mb-4 flex items-center justify-center">
                 <div className="text-center">
                   <svg
                     className="w-12 h-12 text-neutral-400 mx-auto mb-2"
@@ -72,20 +72,20 @@ export default function Figures() {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <span className="text-neutral-500 text-sm">
+                  <span className="text-muted-foreground text-sm">
                     {fig.id}
                   </span>
                 </div>
               </div>
 
               {/* Caption */}
-              <h3 className="font-semibold text-neutral-900 mb-2">
+              <h3 className="font-semibold text-foreground mb-2">
                 {fig.title}
               </h3>
-              <p className="text-sm text-neutral-700 mb-3">{fig.caption}</p>
+              <p className="text-sm text-muted-foreground mb-3">{fig.caption}</p>
 
               {/* Source badge */}
-              <div className="text-xs text-neutral-500">
+              <div className="text-xs text-muted-foreground">
                 Source: <span className="font-mono">{fig.source}</span>
               </div>
             </Card>
@@ -94,28 +94,28 @@ export default function Figures() {
       </Section>
 
       {/* Additional Info */}
-      <Section title="About These Figures" className="bg-neutral-50">
+      <Section title="About These Figures" className="bg-muted/30">
         <Card>
-          <h3 className="font-semibold text-neutral-900 mb-4">
+          <h3 className="font-semibold text-foreground mb-4">
             Simulation Evidence
           </h3>
-          <p className="text-neutral-700 mb-4">
+          <p className="text-muted-foreground mb-4">
             All figures shown here are generated from simulations of the HCSN
             framework. Each figure represents empirical measurement from one or
             more simulation runs under controlled conditions.
           </p>
-          <p className="text-neutral-700 mb-4">
+          <p className="text-muted-foreground mb-4">
             Currently, figures are placeholders pending open-source simulation
             code release. Descriptions reflect actual measurements from
             simulation but images are schematic.
           </p>
-          <h4 className="font-semibold text-neutral-900 mb-2 mt-6">
+          <h4 className="font-semibold text-foreground mb-2 mt-6">
             Future Expansion
           </h4>
-          <p className="text-neutral-700">
+          <p className="text-muted-foreground">
             As the project develops, this gallery will grow to include:
           </p>
-          <ul className="space-y-1 text-neutral-700 ml-4 list-disc mt-2">
+          <ul className="space-y-1 text-muted-foreground ml-4 list-disc mt-2">
             <li>Phase transition dynamics</li>
             <li>Particle spectrum and decay modes</li>
             <li>Dimensional emergence plots</li>

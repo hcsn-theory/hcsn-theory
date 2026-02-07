@@ -9,29 +9,29 @@ export default function Contact() {
       <Section title="Contact">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Card>
-            <h3 className="text-xl font-semibold text-neutral-900 mb-4">
+            <h3 className="text-xl font-semibold text-foreground mb-4">
               Email
             </h3>
-            <p className="text-neutral-700 mb-4">
+            <p className="text-muted-foreground mb-4">
               Questions, feedback, or collaboration inquiries:
             </p>
             <a
-              href="mailto:contact@hcsn-theory.research"
+              href="mailto:hcsntheory@hcsn.tech"
               className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
             >
-              contact@hcsn-theory.research
+              hcsntheory@hcsn.tech
             </a>
           </Card>
 
           <Card>
-            <h3 className="text-xl font-semibold text-neutral-900 mb-4">
+            <h3 className="text-xl font-semibold text-foreground mb-4">
               GitHub
             </h3>
-            <p className="text-neutral-700 mb-4">
+            <p className="text-muted-foreground mb-4">
               View the theory documents and contribute:
             </p>
             <a
-              href="https://github.com"
+              href="https://github.com/hcsn-theory"
               className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
             >
               github.com/hcsn-theory
@@ -41,17 +41,17 @@ export default function Contact() {
       </Section>
 
       {/* Discussion guidelines */}
-      <Section title="How We Collaborate" className="bg-neutral-50">
+      <Section title="How We Collaborate" className="bg-muted/30">
         <div className="space-y-6">
           <Card>
-            <h3 className="font-semibold text-neutral-900 mb-3">
+            <h3 className="font-semibold text-foreground mb-3">
               Research Discussion
             </h3>
-            <p className="text-neutral-700">
+            <p className="text-muted-foreground">
               We welcome rigorous discussion of theory, methodology, and
               simulation results. All comments should be grounded in:
             </p>
-            <ul className="space-y-2 text-neutral-700 ml-4 list-disc mt-3">
+            <ul className="space-y-2 text-muted-foreground ml-4 list-disc mt-3">
               <li>Operational definitions</li>
               <li>Empirical evidence from simulation</li>
               <li>Logical reasoning from axioms</li>
@@ -59,10 +59,10 @@ export default function Contact() {
           </Card>
 
           <Card>
-            <h3 className="font-semibold text-neutral-900 mb-3">
+            <h3 className="font-semibold text-foreground mb-3">
               What We're Open To
             </h3>
-            <ul className="space-y-2 text-neutral-700 ml-4 list-disc">
+            <ul className="space-y-2 text-muted-foreground ml-4 list-disc">
               <li>Alternative rewrite rule proposals</li>
               <li>Simulation implementations</li>
               <li>Mathematical refinements</li>
@@ -72,16 +72,16 @@ export default function Contact() {
           </Card>
 
           <Card>
-            <h3 className="font-semibold text-neutral-900 mb-3">
+            <h3 className="font-semibold text-foreground mb-3">
               What We're Not Claiming
             </h3>
-            <ul className="space-y-2 text-neutral-700 ml-4 list-disc">
+            <ul className="space-y-2 text-muted-foreground ml-4 list-disc">
               <li>Unification of physics ✗</li>
               <li>Correspondence with known theories ✗</li>
               <li>Final answers ✗</li>
               <li>Experimental predictions (yet) ✗</li>
             </ul>
-            <p className="text-neutral-700 text-sm mt-3">
+            <p className="text-muted-foreground text-sm mt-3">
               This is exploratory theory. All claims are graded by empirical
               support and remain open to revision.
             </p>
@@ -119,22 +119,22 @@ export default function Contact() {
             },
           ].map((item, idx) => (
             <Card key={idx}>
-              <h4 className="font-semibold text-neutral-900 mb-2">
+              <h4 className="font-semibold text-foreground mb-2">
                 {item.q}
               </h4>
-              <p className="text-neutral-700 text-sm">{item.a}</p>
+              <p className="text-muted-foreground text-sm">{item.a}</p>
             </Card>
           ))}
         </div>
       </Section>
 
       {/* Newsletter/Updates placeholder */}
-      <Section title="Stay Updated" className="bg-neutral-50">
+      <Section title="Stay Updated" className="bg-muted/30">
         <Card>
-          <h3 className="font-semibold text-neutral-900 mb-4">
+          <h3 className="font-semibold text-foreground mb-4">
             Subscribe for Updates
           </h3>
-          <p className="text-neutral-700 mb-6">
+          <p className="text-muted-foreground mb-6">
             Get notified when major theory updates, new documents, or simulation
             results are released.
           </p>
@@ -146,12 +146,12 @@ export default function Contact() {
             />
             <button
               type="submit"
-              className="w-full px-4 py-2 bg-neutral-900 text-white rounded-lg font-medium hover:bg-neutral-800 transition-colors"
+              className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
             >
               Subscribe
             </button>
           </form>
-          <p className="text-xs text-neutral-500 mt-4">
+          <p className="text-xs text-muted-foreground mt-4">
             We'll email you only for major updates. No spam.
           </p>
         </Card>

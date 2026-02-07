@@ -23,21 +23,21 @@ export const documentationItems = [
     description:
       'Minimal axiom set and methodological principles underlying HCSN.',
     status: 'Stable',
-    link: '#docs-axioms',
+    link: '/docs/01_axioms_and_methodology',
   },
   {
     id: 'defects',
     title: 'Defects, Worldlines, and Particles',
     description: 'Emergent objects and operational identity definitions.',
     status: 'Empirical',
-    link: '#docs-defects',
+    link: '/docs/02_defects_worldlines_and_particles',
   },
   {
     id: 'dynamics',
     title: 'Emergent Dynamics, Momentum, and Interaction',
     description: 'Motion, momentum, mass, and interaction without spacetime.',
     status: 'Empirical',
-    link: '#docs-dynamics',
+    link: '/docs/03_emergent_dynamics_momentum_and_interaction',
   },
   {
     id: 'geometry',
@@ -45,7 +45,7 @@ export const documentationItems = [
     description:
       'Large-scale structure, phase transitions, and theory boundaries.',
     status: 'In Progress',
-    link: '#docs-geometry',
+    link: '/docs/04_geometry_dimension_uncertainty_and_limits',
   },
 ];
 
