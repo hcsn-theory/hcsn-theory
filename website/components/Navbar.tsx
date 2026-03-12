@@ -14,10 +14,13 @@ export function Navbar() {
   const pathname = usePathname()
   const { setTheme, theme } = useTheme()
 
+  if (pathname === '/simulation') return null;
+
   const navItems = [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },
     { label: "Docs", href: "/docs" },
+    { label: "Simulation", href: "/simulation" },
     { label: "Figures", href: "/figures" },
     { label: "Roadmap", href: "/roadmap" },
     { label: "Contact", href: "/contact" },

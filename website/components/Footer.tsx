@@ -1,9 +1,13 @@
 "use client"
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Github, Twitter, Mail } from 'lucide-react';
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname === '/simulation') return null;
+
   return (
     <footer className="border-t bg-background">
       <div className="container mx-auto px-4 py-12 md:px-6 md:py-16">
