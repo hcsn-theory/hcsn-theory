@@ -31,6 +31,7 @@ interface SimState {
   vertices: VertexData[];
   edges: number[][]; // array of array of vertex IDs
   stats: Stats;
+  logs?: string[];
 }
 
 // ── Params ────────────────────────────────────────────────────────────
@@ -81,6 +82,10 @@ export function SimulationViewer() {
   const [speed, setSpeed] = useState(5);
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
 
+  const [serverLogs, setServerLogs] = useState<string[]>([]);
+  const logsEndRef = useRef<HTMLDivElement>(null);
+  const terminalScrollRef = useRef<HTMLDivElement>(null);
+
   const omegaHisRef = useRef<number[]>([]);
   const xiHisRef = useRef<number[]>([]);
 
@@ -126,6 +131,15 @@ export function SimulationViewer() {
     setWsUrl(defaultUrl);
     setCurrentUrlInput(defaultUrl);
   }, []);
+
+  // Scroll logs to bottom whenever they change - LOCALIZED to avoid bumping whole page
+  useEffect(() => {
+    if (terminalScrollRef.current) {
+      // Localized scroll is much better for mobile page stability
+      terminalScrollRef.current.scrollTop = 0; 
+      // Since we use flex-col-reverse, scrollTop=0 IS the bottom (the newest log)
+    }
+  }, [serverLogs, status]);
 
   // ── ThreeJS Setup ───────────────────────────────────────────────────
   useEffect(() => {
@@ -247,10 +261,12 @@ export function SimulationViewer() {
     }
 
     setStatus('CONNECTING');
+    setServerLogs([]); // Prevent old logs from persisting across reconnects
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
       setStatus('LIVE');
+      setServerLogs([]); // Ensure clean slate
     };
 
     ws.onmessage = (e) => {
@@ -301,6 +317,7 @@ export function SimulationViewer() {
     setSimState({});
     setIsPaused(false);
     setSelectedNodeId(null);
+    setServerLogs([]);
     omegaHisRef.current = [];
     xiHisRef.current = [];
     latestEdgesRef.current = [];
@@ -745,6 +762,14 @@ export function SimulationViewer() {
 
         // Update UI State
         setSimState(s);
+        
+        // Update Server Logs
+        if (s.logs && s.logs.length > 0) {
+          setServerLogs(prev => {
+            const next = [...prev, ...(s.logs as string[])];
+            return next.length > 100 ? next.slice(next.length - 100) : next;
+          });
+        }
 
         // Update Charts Data
         omegaHisRef.current.push(s.omega ?? 0);
@@ -857,9 +882,12 @@ export function SimulationViewer() {
   };
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden font-mono text-[10px] sm:text-xs selection:bg-[#FF9500]/30 selection:text-white" style={{ fontFamily: "'JetBrains Mono', 'Fira Code', 'Courier New', monospace" }}>
-      {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="absolute inset-0 cursor-crosshair z-0" />
+    <div className="relative w-full h-screen sm:overflow-hidden bg-[#000208] text-[#d0eeff] font-sans selection:bg-[#00ffb2]/30 overflow-hidden">
+      {/* Simulation Container - Always full screen background */}
+      <div 
+        ref={mountRef} 
+        className="fixed inset-0 sm:absolute sm:inset-0 w-full h-full z-0 bg-[#000208]"
+      />
 
       {/* Back Button */}
       <Link href="/" className="absolute top-4 right-4 z-20 text-[#8ab8cc]/80 hover:text-[#00ffb2] hover:bg-[#00ffb2]/10 transition-all uppercase tracking-widest text-[9px] sm:text-[10px] pointer-events-auto bg-[#000208]/90 px-3 py-2 border border-[#00b4ff]/20 backdrop-blur-md flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,180,255,0.1)] hover:border-[#00ffb2]/50">
@@ -918,173 +946,218 @@ export function SimulationViewer() {
         </div>
       )}
 
-      {/* Top Timer Overlay */}
-      {status === 'LIVE' && !timeoutReached && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-[#000208]/90 border border-[#00ffb2]/20 backdrop-blur-md px-6 py-2 rounded-full flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-[#00ffb2] animate-pulse shadow-[0_0_8px_#00ffb2]" />
-          <div className="flex flex-col items-center">
-            <span className="text-[9px] text-[#8ab8cc]/60 uppercase tracking-[0.2em] leading-none mb-1">Time Remaining</span>
-            <span className="text-sm font-bold text-[#00ffb2] font-mono leading-none tracking-widest">
-              {formatTime(timeLeft)}
-            </span>
+      {/* HUD & Overlay Layer - Responsive scroll behavior */}
+      <div className="fixed inset-0 z-10 overflow-y-auto sm:overflow-hidden no-scrollbar sm:pointer-events-none">
+        {/* Mobile Header Spacer - Immersive view with a 'swipe zone' at the bottom */}
+        <div className="h-[88vh] sm:hidden pointer-events-none" />
+
+        {/* Dashboard Panels Container - Mobile: translucent scroll sheet | Desktop: layout component */}
+        <div className="relative z-20 flex flex-col sm:contents bg-gradient-to-b from-transparent via-[#000208]/80 to-[#000208] sm:from-transparent sm:via-transparent sm:to-transparent px-4 pb-12 pt-8 sm:p-0 min-h-screen sm:min-h-0">
+        {/* Top Timer Overlay - Absolute positioning within the header area on mobile */}
+        {status === 'LIVE' && !timeoutReached && (
+          <div className="fixed sm:absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-[#000208]/40 border border-[#00ffb2]/10 backdrop-blur-sm px-6 py-2 rounded-full flex items-center gap-3 shadow-[0_0_15px_rgba(0,255,178,0.05)] hover:bg-[#000208]/90 hover:border-[#00ffb2]/30 hover:backdrop-blur-md transition-all duration-500 group pointer-events-auto">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#00ffb2] animate-pulse shadow-[0_0_8px_#00ffb2]" />
+            <div className="flex flex-col items-center">
+              <span className="text-[7px] text-[#8ab8cc]/30 group-hover:text-[#8ab8cc]/50 uppercase tracking-[0.3em] leading-none mb-1 font-mono transition-colors">Clock Speed</span>
+              <span className="text-sm font-bold text-[#00ffb2]/80 group-hover:text-[#00ffb2] font-mono leading-none tracking-widest transition-colors">
+                {formatTime(timeLeft)}
+              </span>
+            </div>
+          </div>
+        )}
+
+          {/* Info Panel - Absolute on desktop, relative block on mobile */}
+          <div className="sm:absolute top-4 left-4 z-30 bg-[#000208]/40 hover:bg-[#000208]/90 border border-[#00b4ff]/10 hover:border-[#00b4ff]/30 backdrop-blur-sm hover:backdrop-blur-md transition-all duration-500 p-4 sm:p-4 min-w-[210px] pointer-events-auto sm:max-w-[50vw] rounded-md shadow-[0_0_15px_rgba(0,180,255,0.03)] group mb-8 sm:mb-0">
+          <div className="text-xl font-black text-[#FF9500] tracking-widest leading-none drop-shadow-[0_0_15px_rgba(255,149,0,0.35)] group-hover:drop-shadow-[0_0_20px_rgba(255,149,0,0.6)] transition-all">HCSN</div>
+          <div className="text-[8px] sm:text-[8px] text-[#FF9500]/40 tracking-[0.2em] mt-1 mb-2 font-bold uppercase transition-colors group-hover:text-[#FF9500]/60">Live Environment</div>
+          <div className="h-[1px] w-full bg-gradient-to-r from-[#00b4ff]/20 to-transparent my-3" />
+
+          <div className="grid grid-cols-2 sm:block gap-x-4">
+            <div className="flex justify-between items-center my-2 gap-2 sm:gap-3">
+              <span className="text-[#8ab8cc]/30 text-[9px] sm:text-[9px] font-mono tracking-tighter uppercase">status</span>
+              <span className="flex items-center gap-1.5 sm:gap-2">
+                <span className={`w-1.5 h-1.5 rounded-full ${status === 'LIVE' ? 'bg-[#00ffb2] shadow-[0_0_8px_#00ffb2] animate-pulse' : 'bg-[#ff3a3a]'}`} />
+                <span className="text-[10px] sm:text-[10px] font-bold text-[#d0eeff]/80 font-mono italic">{status}</span>
+              </span>
+            </div>
+            
+            <div className="flex justify-between items-center my-2 gap-2 sm:gap-3 border-t sm:border-t-0 sm:border-none border-[#00b4ff]/5 pt-2 sm:pt-0">
+              <span className="text-[#8ab8cc]/30 text-[9px] sm:text-[9px] font-mono tracking-tighter uppercase">phase</span>
+              <span className="text-[10px] sm:text-[9px] font-bold text-[#ffcc00]/80 text-right max-w-[120px] sm:max-w-[140px] truncate font-mono uppercase" title={simState.phase_label}>{simState.phase_label || '—'}</span>
+            </div>
+            <div className="flex justify-between items-center my-2 gap-2 sm:gap-3 font-mono border-t sm:border-t-0 border-[#00b4ff]/5 pt-2 sm:pt-0">
+              <span className="text-[#8ab8cc]/30 text-[9px] sm:text-[9px] tracking-tighter uppercase">step.t</span>
+              <span className="text-[11px] sm:text-[10px] font-bold text-[#00d4ff]/90">{simState.t ?? '—'}</span>
+            </div>
+            <div className="flex justify-between items-center my-2 gap-2 sm:gap-3 font-mono border-t sm:border-t-0 border-[#00b4ff]/5 pt-2 sm:pt-0">
+              <span className="text-[#8ab8cc]/30 text-[9px] sm:text-[9px] tracking-tighter uppercase">verts</span>
+              <span className="text-[11px] sm:text-[10px] font-bold text-[#d0eeff]/80">{simState.stats?.total_vertices ?? '—'}</span>
+            </div>
+            <div className="flex justify-between items-center my-2 gap-2 sm:gap-3 font-mono border-t sm:border-t-0 border-[#00b4ff]/5 pt-2 sm:pt-0">
+              <span className="text-[#8ab8cc]/30 text-[9px] sm:text-[9px] tracking-tighter uppercase">edges</span>
+              <span className="text-[11px] sm:text-[10px] font-bold text-[#d0eeff]/80">{simState.stats?.total_edges ?? '—'}</span>
+            </div>
+            <div className="flex justify-between items-center my-2 gap-2 sm:gap-3 border-t border-[#00b4ff]/5 pt-2 font-mono">
+              <span className="text-[#8ab8cc]/30 text-[9px] sm:text-[9px] tracking-tighter uppercase">Ω-clos</span>
+              <span className="text-[11px] sm:text-[10px] font-bold text-[#00d4ff]">{(simState.omega ?? 0).toFixed(6)}</span>
+            </div>
+            <div className="flex justify-between items-center my-2 gap-2 sm:gap-3 font-mono border-t border-[#00b4ff]/5 pt-2">
+              <span className="text-[#8ab8cc]/30 text-[9px] sm:text-[9px] tracking-tighter uppercase">ξ-active</span>
+              <span className="text-[11px] sm:text-[10px] font-bold text-[#FF9500]">{simState.stats?.xi_count ?? '—'}</span>
+            </div>
+            <div className="flex justify-between items-center my-2 gap-2 sm:gap-3 font-mono border-t border-[#00b4ff]/5 pt-2">
+              <span className="text-[#8ab8cc]/30 text-[9px] sm:text-[9px] tracking-tighter uppercase">clusters</span>
+              <span className="text-[11px] sm:text-[10px] font-bold text-[#FF00AA]">{simState.stats?.xi_clusters ?? '—'}</span>
+            </div>
           </div>
         </div>
-      )}
 
-      {/* Info Panel */}
-      <div className="absolute top-4 left-4 z-10 bg-[#000208]/90 border border-[#00b4ff]/10 backdrop-blur-md p-3 sm:p-4 min-w-[180px] sm:min-w-[228px] pointer-events-auto max-w-[50vw]">
-        <div className="text-xl sm:text-2xl font-black text-[#FF9500] tracking-widest leading-none drop-shadow-[0_0_20px_rgba(255,149,0,0.5)]">HCSN</div>
-        <div className="text-[7px] sm:text-[9px] text-[#FF9500]/30 tracking-[0.14em] mt-1 mb-2">LIVE SIMULATION VIEWER</div>
-        <div className="h-[1px] w-full bg-[#00b4ff]/10 my-2" />
+            {/* Charts Panel */}
+            <div className="sm:absolute top-4 right-4 z-30 bg-[#000208]/40 hover:bg-[#000208]/90 border border-[#00b4ff]/10 hover:border-[#00b4ff]/30 backdrop-blur-sm hover:backdrop-blur-md transition-all duration-500 p-4 sm:w-[260px] pointer-events-auto rounded-md shadow-[0_0_15px_rgba(0,180,255,0.03)] group mb-8 sm:mb-0">
+              <div className="text-[8px] tracking-[0.2em] text-[#00b4ff]/30 group-hover:text-[#00b4ff]/60 uppercase mb-2 font-mono transition-colors">Ω — Hierarchical Closure</div>
+              <div className="bg-black/20 p-2 rounded-sm border border-[#00b4ff]/5 group-hover:border-[#00b4ff]/20 transition-all">
+                <canvas id="ch-omega" height="80" className="w-full block rendering-pixelated opacity-60 group-hover:opacity-100 transition-opacity" />
+              </div>
+              
+              <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-[#00b4ff]/10 to-transparent my-5" />
+              
+              <div className="text-[8px] tracking-[0.2em] text-[#00b4ff]/30 group-hover:text-[#00b4ff]/60 uppercase mb-2 font-mono transition-colors">|ξ| — Active Field Count</div>
+              <div className="bg-black/20 p-2 rounded-sm border border-[#00b4ff]/5 group-hover:border-[#00b4ff]/20 transition-all">
+                <canvas id="ch-xi" height="60" className="w-full block rendering-pixelated opacity-50 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </div>
 
-        <div className="flex justify-between items-baseline my-1.5 gap-2 sm:gap-3">
-          <span className="text-[#8ab8cc]/40 text-[9px] sm:text-[10px]">STATUS</span>
-          <span className="flex items-center gap-1.5 sm:gap-2">
-            <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${status === 'LIVE' ? 'bg-[#00ffb2] shadow-[0_0_6px_#00ffb2] animate-pulse' : 'bg-[#ff3a3a]'}`} />
-            <span className="text-[10px] sm:text-xs font-bold text-[#d0eeff]">{status}</span>
-          </span>
-        </div>
-        
-        <div className="flex justify-between items-baseline my-1.5 gap-2 sm:gap-3 border-t border-[#00b4ff]/5 pt-1.5">
-          <span className="text-[#8ab8cc]/40 text-[9px] sm:text-[10px]">PHASE</span>
-          <span className="text-[8px] sm:text-[9px] font-bold text-[#ffcc00] text-right max-w-[100px] sm:max-w-[140px] truncate" title={simState.phase_label}>{simState.phase_label || '—'}</span>
-        </div>
-        <div className="flex justify-between items-baseline my-1.5 gap-2 sm:gap-3">
-          <span className="text-[#8ab8cc]/40 text-[9px] sm:text-[10px]">STEP (t)</span>
-          <span className="text-[10px] sm:text-xs font-bold text-[#00d4ff]">{simState.t ?? '—'}</span>
-        </div>
-        <div className="flex justify-between items-baseline my-1.5 gap-2 sm:gap-3">
-          <span className="text-[#8ab8cc]/40 text-[9px] sm:text-[10px]">VERTICES</span>
-          <span className="text-[10px] sm:text-xs font-bold text-[#d0eeff]">{simState.stats?.total_vertices ?? '—'}</span>
-        </div>
-        <div className="flex justify-between items-baseline my-1.5 gap-2 sm:gap-3">
-          <span className="text-[#8ab8cc]/40 text-[9px] sm:text-[10px]">HYPEREDGES</span>
-          <span className="text-[10px] sm:text-xs font-bold text-[#d0eeff]">{simState.stats?.total_edges ?? '—'}</span>
-        </div>
-        <div className="flex justify-between items-baseline my-1.5 gap-2 sm:gap-3 border-t border-[#00b4ff]/5 pt-1.5">
-          <span className="text-[#8ab8cc]/40 text-[9px] sm:text-[10px]">Ω closure</span>
-          <span className="text-[10px] sm:text-xs font-bold text-[#00d4ff]">{(simState.omega ?? 0).toFixed(6)}</span>
-        </div>
-        <div className="flex justify-between items-baseline my-1.5 gap-2 sm:gap-3">
-          <span className="text-[#8ab8cc]/40 text-[9px] sm:text-[10px]">|ξ| active</span>
-          <span className="text-[10px] sm:text-xs font-bold text-[#FF9500]">{simState.stats?.xi_count ?? '—'}</span>
-        </div>
-        <div className="flex justify-between items-baseline my-1.5 gap-2 sm:gap-3">
-          <span className="text-[#8ab8cc]/40 text-[9px] sm:text-[10px]">ξ CLUSTERS</span>
-          <span className="text-[10px] sm:text-xs font-bold text-[#FF00AA]">{simState.stats?.xi_clusters ?? '—'}</span>
-        </div>
-      </div>
+            {/* Legend Panel */}
+            <div className="sm:absolute bottom-[80px] left-4 z-30 bg-[#000208]/40 hover:bg-[#000208]/90 border border-[#00b4ff]/10 hover:border-[#00b4ff]/30 backdrop-blur-sm hover:backdrop-blur-md transition-all duration-500 p-4 sm:min-w-[200px] pointer-events-auto rounded-md shadow-[0_0_15px_rgba(0,180,255,0.03)] group mb-8 sm:mb-0">
+              <div className="text-[8px] tracking-[0.2em] text-[#00b4ff]/30 group-hover:text-[#00b4ff]/60 uppercase mb-3 font-mono transition-colors">Simulation Key</div>
+              <div className="grid grid-cols-1 gap-x-6">
+                <div className="flex items-center gap-3 my-1.5 text-[11px] text-[#8ab8cc]/60 group-hover:text-[#8ab8cc] transition-colors">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#0d1820]" /> Inactive / basic
+                </div>
+                <div className="flex items-center gap-3 my-1.5 text-[11px] text-[#8ab8cc]/60 group-hover:text-[#8ab8cc] transition-colors">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#FF9500] shadow-[0_0_6px_rgba(255,149,0,0.3)] group-hover:shadow-[0_0_10px_#FF9500]" /> Particle 1 (Major)
+                </div>
+                <div className="flex items-center gap-3 my-1.5 text-[11px] text-[#8ab8cc]/60 group-hover:text-[#8ab8cc] transition-colors">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#FF00AA] shadow-[0_0_6px_rgba(255,0,170,0.3)] group-hover:shadow-[0_0_10px_#FF00AA]" /> Particle 2 (Minor)
+                </div>
+                <div className="hidden sm:block h-[1px] w-full bg-gradient-to-r from-transparent via-[#00b4ff]/10 to-transparent my-3" />
+                <div className="flex items-center gap-3 my-1.5 text-[11px] text-[#8ab8cc]/60 group-hover:text-[#8ab8cc] transition-colors">
+                  <div className="w-5 h-[3.5px] rounded-sm bg-[#0d1a28]" /> Hyperedge (static)
+                </div>
+                <div className="flex items-center gap-3 my-1.5 text-[11px] text-[#8ab8cc]/60 group-hover:text-[#8ab8cc] transition-colors">
+                  <div className="w-5 h-[3.5px] rounded-sm bg-gradient-to-r from-[#FF9500] to-[#FF00AA]" /> Intra-cluster link
+                </div>
+                <div className="flex items-center gap-3 my-1.5 text-[11px] text-[#8ab8cc]/60 group-hover:text-[#8ab8cc] transition-colors">
+                  <div className="w-5 h-[3.5px] rounded-sm bg-[#FFE600] shadow-[0_0_4px_rgba(255,230,0,0.3)] group-hover:shadow-[0_0_8px_#FFE600]" /> Interaction bridge
+                </div>
+              </div>
+              <div className="h-[1px] w-full bg-[#00b4ff]/5 mt-4 mb-2" />
+              <div className="text-[8px] text-[#8ab8cc]/20 tracking-[0.2em] text-center font-mono group-hover:text-[#8ab8cc]/40 transition-colors uppercase">Z-DIMENSION : CAUSAL TIME</div>
+            </div>
 
-      {/* Charts Panel */}
-      <div className="absolute top-4 right-4 z-10 bg-[#000208]/90 border border-[#00b4ff]/10 backdrop-blur-md p-4 w-[260px] pointer-events-auto hidden sm:block">
-        <div className="text-[9px] tracking-[0.18em] text-[#00b4ff]/40 uppercase mb-1">Ω — Hierarchical Closure</div>
-        <canvas id="ch-omega" height="70" className="w-full block mt-1 rendering-pixelated" />
-        
-        <div className="h-[1px] w-full bg-[#00b4ff]/10 my-3" />
-        
-        <div className="text-[9px] tracking-[0.18em] text-[#00b4ff]/40 uppercase mb-1">|ξ| — Active Field Count</div>
-        <canvas id="ch-xi" height="50" className="w-full block mt-1 rendering-pixelated" />
-      </div>
+            {/* Floating HUD Logs */}
+            <div className="sm:absolute bottom-[80px] right-4 z-30 w-full sm:w-[320px] h-[22vh] sm:h-auto max-h-[25vh] sm:max-h-[calc(100vh-320px)] pointer-events-none flex flex-col group transition-all duration-700 mb-8 sm:mb-0">
+              <div className="flex justify-between items-center mb-2 px-2 pb-1 border-b border-[#00ffb2]/10 shrink-0 pointer-events-auto opacity-40 group-hover:opacity-100 transition-opacity">
+                <div className="text-[8px] sm:text-[8px] tracking-[0.25em] text-[#00ffb2]/60 uppercase font-bold">SYSTEM FEED</div>
+                <div className="flex gap-1.5">
+                  <span className="w-1 h-1 rounded-full bg-[#00ffb2] animate-pulse" />
+                  <span className="w-1 h-1 rounded-full bg-[#00ffb2] opacity-50" />
+                </div>
+              </div>
 
-      {/* Legend Panel - Hide entirely on mobile to save space */}
-      <div className="hidden sm:block absolute bottom-[80px] left-4 z-10 bg-[#000208]/90 border border-[#00b4ff]/10 backdrop-blur-md p-4 min-w-[200px] pointer-events-auto">
-        <div className="text-[9px] tracking-[0.18em] text-[#00b4ff]/40 uppercase mb-2">Legend</div>
-        <div className="flex items-center gap-2.5 my-1 text-[10px] text-[#8ab8cc]">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#0d1820]" /> Inactive / small cluster
-        </div>
-        <div className="flex items-center gap-2.5 my-1 text-[10px] text-[#8ab8cc]">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#FF9500] shadow-[0_0_6px_#FF9500]" /> Particle 1 (largest)
-        </div>
-        <div className="flex items-center gap-2.5 my-1 text-[10px] text-[#8ab8cc]">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#FF00AA] shadow-[0_0_6px_#FF00AA]" /> Particle 2 (2nd largest)
-        </div>
-        <div className="h-[1px] w-full bg-[#00b4ff]/10 my-2" />
-        <div className="flex items-center gap-2.5 my-1 text-[10px] text-[#8ab8cc]">
-          <div className="w-5 h-[3px] rounded-sm bg-[#0d1a28]" /> Hyperedge (inactive)
-        </div>
-        <div className="flex items-center gap-2.5 my-1 text-[10px] text-[#8ab8cc]">
-          <div className="w-5 h-[3px] rounded-sm bg-gradient-to-r from-[#FF9500] to-[#FF00AA]" /> Intra-cluster tube
-        </div>
-        <div className="flex items-center gap-2.5 my-1 text-[10px] text-[#8ab8cc]">
-          <div className="w-5 h-[3px] rounded-sm bg-[#FFE600] shadow-[0_0_4px_#FFE600]" /> Cross-cluster (interaction)
-        </div>
-        <div className="h-[1px] w-full bg-[#00b4ff]/10 mt-2 mb-1.5" />
-        <div className="text-[9px] text-[#8ab8cc]/35 tracking-[0.1em] text-center">Z-AXIS = CAUSAL DEPTH (TIME)</div>
-      </div>
+              <div 
+                ref={terminalScrollRef}
+                className="px-2 overflow-y-auto hcsn-terminal-scroll no-scrollbar sm:no-scroll font-mono text-[9.5px] sm:text-[9px] leading-relaxed text-[#8ab8cc]/70 group-hover:text-[#8ab8cc] transition-all duration-500 pointer-events-auto bg-[#000208]/20 rounded-sm"
+              >
+                {/* Bottom-heavy fade effect container */}
+                <div className="flex flex-col-reverse justify-end min-h-full">
+                  <div ref={logsEndRef} className="h-2" />
+                  {serverLogs.length === 0 ? (
+                    <div className="text-[#8ab8cc]/20 italic py-2">Establishing uplink...</div>
+                  ) : (
+                    [...serverLogs].reverse().map((log, i) => (
+                      <div key={i} className={`mb-1 transition-all duration-500 hover:translate-x-1 ${
+                        log.includes('[server] Phase') ? 'text-[#FF9500] font-bold' : 
+                        log.includes('error') ? 'text-[#ff3a3a]' : 
+                        log.includes('PROBE') ? 'text-[#FF00AA]' : ''
+                      }`}>
+                        <span className="text-[#00ffb2]/20 mr-2 tabular-nums">
+                          {String((simState?.t || 0) - i).padStart(4, '0')}
+                        </span> 
+                        {log}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
 
-      {/* Controls Bar - Mobile Responsive Grid/Wrap */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-[#000208]/90 border border-[#00b4ff]/10 backdrop-blur-md p-2 sm:px-4 sm:py-2.5 flex items-center justify-center pointer-events-auto rounded w-[95%] sm:w-auto overflow-hidden">
-        <div className="grid grid-cols-3 sm:flex items-center gap-2 sm:gap-4 w-full">
-          <button 
-            onClick={() => setIsPaused(!isPaused)}
-            className={`col-span-1 border uppercase tracking-widest transition-all text-[9px] sm:text-[10px] py-1.5 px-2 sm:px-3 whitespace-nowrap outline-none ${
-              !isPaused 
-                ? 'bg-[#FF9500]/10 border-[#FF9500] text-[#FF9500]' 
-                : 'bg-black/40 border-[#00b4ff]/10 text-[#8ab8cc] hover:bg-[#FF9500]/15 hover:border-[#FF9500]/50 hover:text-[#FF9500]'
-            }`}
-          >
-            {isPaused ? '▶ RESUME' : '⏸ PAUSE'}
-          </button>
+        {/* Controls Bar - Absolute on desktop, relative column on mobile */}
+        <div className="sm:absolute sm:bottom-4 left-1/2 sm:-translate-x-1/2 z-30 bg-[#000208]/30 hover:bg-[#000208]/90 border border-[#00b4ff]/10 hover:border-[#00b4ff]/30 backdrop-blur-sm hover:backdrop-blur-md p-4 sm:px-4 sm:py-2.5 flex flex-col sm:flex-row items-center justify-center pointer-events-auto rounded-md w-full sm:w-auto transition-all duration-500 shadow-[0_0_20px_rgba(0,180,255,0.02)] group mb-12 sm:mb-0">
+          <div className="grid grid-cols-2 sm:flex items-center gap-3 sm:gap-4 w-full">
+            <button 
+              onClick={() => setIsPaused(!isPaused)}
+              className={`border uppercase tracking-[0.15em] transition-all text-[10px] sm:text-[9px] font-bold py-2.5 sm:py-1.5 px-4 sm:px-4 whitespace-nowrap outline-none rounded-sm ${
+                !isPaused 
+                  ? 'bg-[#FF9500]/5 border-[#FF9500]/40 text-[#FF9500]/80 shadow-[inset_0_0_8px_rgba(255,149,0,0.05)]' 
+                  : 'bg-black/20 border-[#8ab8cc]/10 text-[#8ab8cc]/40 hover:bg-[#FF9500]/10 hover:border-[#FF9500]/60 hover:text-[#FF9500]'
+              }`}
+            >
+              {isPaused ? '▶ Uplink' : '⏸ Stream'}
+            </button>
 
-          <div className="w-[1px] h-5 bg-[#00b4ff]/10 hidden sm:block" />
+            <button 
+              onClick={resetSimulation}
+              className="border uppercase tracking-[0.15em] transition-all text-[10px] sm:text-[9px] font-bold py-2.5 sm:py-1.5 px-4 sm:px-4 whitespace-nowrap outline-none bg-black/20 border-[#ff3a3a]/20 text-[#ff3a3a]/40 hover:bg-[#ff3a3a]/10 hover:border-[#ff3a3a]/60 hover:text-[#ff3a3a] rounded-sm"
+            >
+              ⏹ Purge
+            </button>
 
-          <button 
-            onClick={resetSimulation}
-            className="col-span-1 border uppercase tracking-widest transition-all text-[9px] sm:text-[10px] py-1.5 px-2 sm:px-3 whitespace-nowrap outline-none bg-black/40 border-[#ff3a3a]/30 text-[#ff3a3a] hover:bg-[#ff3a3a]/15 hover:border-[#ff3a3a]/70"
-          >
-            ⏹ STOP / RESET
-          </button>
+            <button 
+              onClick={() => setShowEdges(!showEdges)}
+              className={`border uppercase tracking-[0.15em] transition-all text-[10px] sm:text-[9px] font-bold py-2.5 sm:py-1.5 px-4 sm:px-4 whitespace-nowrap outline-none rounded-sm ${
+                showEdges 
+                  ? 'bg-[#00d4ff]/10 border-[#00d4ff]/40 text-[#00d4ff]' 
+                  : 'bg-black/20 border-[#8ab8cc]/10 text-[#8ab8cc]/40 hover:bg-[#00d4ff]/10 hover:border-[#00d4ff]/60 hover:text-[#00d4ff]'
+              }`}
+            >
+              Edge {showEdges ? 'Show' : 'Hide'}
+            </button>
 
-          <div className="w-[1px] h-5 bg-[#ff3a3a]/20 hidden sm:block mx-0 sm:mx-1" />
+            <button 
+              onClick={() => setForceEnabled(!forceEnabled)}
+              className={`border uppercase tracking-[0.15em] transition-all text-[10px] sm:text-[9px] font-bold py-2.5 sm:py-1.5 px-4 sm:px-4 whitespace-nowrap outline-none rounded-sm ${
+                forceEnabled 
+                  ? 'bg-[#FF00AA]/10 border-[#FF00AA]/40 text-[#FF00AA]' 
+                  : 'bg-black/20 border-[#8ab8cc]/10 text-[#8ab8cc]/40 hover:bg-[#FF00AA]/10 hover:border-[#FF00AA]/60 hover:text-[#FF00AA]'
+              }`}
+            >
+              Force {forceEnabled ? 'On' : 'Off'}
+            </button>
 
-          <button 
-            onClick={() => setShowEdges(!showEdges)}
-            className={`col-span-1 border uppercase tracking-widest transition-all text-[9px] sm:text-[10px] py-1.5 px-2 sm:px-3 whitespace-nowrap outline-none ${
-              showEdges 
-                ? 'bg-[#FF9500]/10 border-[#FF9500] text-[#FF9500]' 
-                : 'bg-black/40 border-[#00b4ff]/10 text-[#8ab8cc] hover:bg-[#FF9500]/15 hover:border-[#FF9500]/50 hover:text-[#FF9500]'
-            }`}
-          >
-            EDGES {showEdges ? 'ON' : 'OFF'}
-          </button>
+            <div className="col-span-2 sm:hidden h-[1px] w-full bg-[#00b4ff]/5 my-1" />
 
-          <button 
-            onClick={() => setForceEnabled(!forceEnabled)}
-            className={`col-span-1 border uppercase tracking-widest transition-all text-[9px] sm:text-[10px] py-1.5 px-2 sm:px-3 whitespace-nowrap outline-none ${
-              forceEnabled 
-                ? 'bg-[#FF9500]/10 border-[#FF9500] text-[#FF9500]' 
-                : 'bg-black/40 border-[#00b4ff]/10 text-[#8ab8cc] hover:bg-[#FF9500]/15 hover:border-[#FF9500]/50 hover:text-[#FF9500]'
-            }`}
-          >
-            FORCE {forceEnabled ? 'ON' : 'OFF'}
-          </button>
+            <div className="col-span-2 sm:col-span-auto flex items-center justify-between sm:justify-center gap-4 px-2 sm:px-0 group/speed">
+              <span className="text-[10px] sm:text-[8px] text-[#8ab8cc]/40 sm:text-[#8ab8cc]/20 group-hover/speed:text-[#8ab8cc]/40 tracking-[0.2em] font-mono uppercase transition-colors">Warp Speed</span>
+              <input 
+                type="range" 
+                min="1" max="10" 
+                value={speed} 
+                onChange={(e) => setSpeed(parseInt(e.target.value))}
+                className="flex-grow sm:w-16 accent-[#FF9500] cursor-pointer bg-[#00b4ff]/5 h-0.5 rounded-full appearance-none outline-none group-hover/speed:bg-[#00b4ff]/20 transition-all opacity-60 group-hover/speed:opacity-100 placeholder-transparent"
+              />
+            </div>
 
-          {/* New row for speed and reset on mobile */}
-          <div className="col-span-3 sm:hidden h-[1px] w-full bg-[#00b4ff]/10" />
-          <div className="w-[1px] h-5 bg-[#00b4ff]/10 hidden sm:block" />
-
-          <div className="col-span-2 sm:col-span-auto flex items-center justify-center gap-2">
-            <span className="text-[9px] sm:text-[10px] text-[#8ab8cc]/40 tracking-[0.1em] uppercase">SPEED</span>
-            <input 
-              type="range" 
-              min="1" max="10" 
-              value={speed} 
-              onChange={(e) => setSpeed(parseInt(e.target.value))}
-              className="w-full sm:w-20 accent-[#FF9500] cursor-pointer bg-[#00b4ff]/10 h-1 rounded-full appearance-none outline-none"
-            />
+            <button 
+              onClick={handleResetOrbit}
+              className="col-span-2 sm:col-span-auto border border-[#8ab8cc]/10 text-[#8ab8cc]/40 hover:bg-[#00d4ff]/10 hover:border-[#00d4ff]/50 hover:text-[#00d4ff] uppercase tracking-[0.15em] text-[10px] sm:text-[9px] font-bold py-2.5 sm:py-1.5 px-4 sm:px-4 whitespace-nowrap outline-none rounded-sm transition-all shadow-none mt-2 sm:mt-0"
+            >
+              ↺ Synchronize
+            </button>
+            </div>
           </div>
-
-          <div className="w-[1px] h-5 bg-[#00b4ff]/10 hidden sm:block" />
-
-          <button 
-            onClick={handleResetOrbit}
-            className="col-span-1 border border-[#00b4ff]/10 bg-black/40 text-[#8ab8cc] hover:bg-[#FF9500]/15 hover:border-[#FF9500]/50 hover:text-[#FF9500] uppercase tracking-widest transition-all text-[9px] sm:text-[10px] py-1.5 px-2 sm:px-3 whitespace-nowrap outline-none"
-          >
-            ↺ RESET VIEW
-          </button>
         </div>
       </div>
-
     </div>
   );
 }
