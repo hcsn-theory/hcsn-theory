@@ -1,41 +1,89 @@
+"use client"
+
+import * as React from 'react';
 import { Section, Card } from '@/components';
+import { RefreshCw } from 'lucide-react';
 
 /**
  * Contact Page
  */
 export default function Contact() {
+  const [status, setStatus] = React.useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('loading');
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData);
+    
+    try {
+      const response = await fetch("https://send.pageclip.co/fhkaBJep2xriqtVYbDbUkFWLRtfS6xeD/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.pageclip.v1+json"
+        },
+        body: JSON.stringify(data)
+      });
+      if (response.ok) {
+        setStatus('success');
+      } else {
+        console.error("Pageclip Error:", await response.text());
+        setStatus('error');
+      }
+    } catch (err) {
+      console.error("Fetch Error:", err);
+      setStatus('error');
+    }
+  };
   return (
     <>
       <Section title="Contact">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Card>
             <h3 className="text-xl font-semibold text-foreground mb-4">
-              Email
+              Email Contacts
             </h3>
-            <p className="text-muted-foreground mb-4">
-              Questions, feedback, or collaboration inquiries:
-            </p>
-            <a
-              href="mailto:hcsntheory@hcsn.tech"
-              className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
-            >
-              hcsntheory@hcsn.tech
-            </a>
+            <div className="space-y-4">
+              <div>
+                <p className="font-medium text-foreground">Research</p>
+                <p className="text-sm text-muted-foreground mb-1">For theory discoveries and research-related inquiries.</p>
+                <a href="mailto:research@hcsn.tech" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">research@hcsn.tech</a>
+              </div>
+              <div>
+                <p className="font-medium text-foreground">Technical Support</p>
+                <p className="text-sm text-muted-foreground mb-1">For website issues, simulation crashes, and technical reports.</p>
+                <a href="mailto:admin@hcsn.tech" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">admin@hcsn.tech</a>
+              </div>
+              <div>
+                <p className="font-medium text-foreground">Personal</p>
+                <p className="text-sm text-muted-foreground mb-1">For personal contact and direct inquiries.</p>
+                <a href="mailto:saifmukhtar@hcsn.tech" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">saifmukhtar@hcsn.tech</a>
+              </div>
+            </div>
           </Card>
 
           <Card>
             <h3 className="text-xl font-semibold text-foreground mb-4">
-              GitHub
+              GitHub Projects
             </h3>
-            <p className="text-muted-foreground mb-4">
-              View the theory documents and contribute:
-            </p>
-            <a
-              href="https://github.com/hcsn-theory"
-              className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
-            >
-              github.com/hcsn-theory
-            </a>
+            <div className="space-y-4">
+              <div>
+                <p className="font-medium text-foreground">Organization Profile</p>
+                <p className="text-sm text-muted-foreground mb-1">View our primary GitHub organization.</p>
+                <a href="https://github.com/hcsn-theory" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">github.com/hcsn-theory</a>
+              </div>
+              <div>
+                <p className="font-medium text-foreground">Theory Repository</p>
+                <p className="text-sm text-muted-foreground mb-1">View the theory documents and academic contributions.</p>
+                <a href="https://github.com/hcsn-theory/hcsn-theory" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">hcsn-theory/hcsn-theory</a>
+              </div>
+              <div>
+                <p className="font-medium text-foreground">Simulation Code</p>
+                <p className="text-sm text-muted-foreground mb-1">Open-source codebase for the causal network simulations.</p>
+                <a href="https://github.com/hcsn-theory/hcsn-sim" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">hcsn-theory/hcsn-sim</a>
+              </div>
+            </div>
           </Card>
         </div>
       </Section>
@@ -138,18 +186,33 @@ export default function Contact() {
             Get notified when major theory updates, new documents, or simulation
             results are released.
           </p>
-          <form className="space-y-3">
+          <form onSubmit={handleSubmit} className="relative space-y-3">
             <input
+              name="email"
+              required
+              disabled={status === 'loading' || status === 'success'}
               type="email"
               placeholder="your@email.com"
-              className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              className="w-full px-4 py-3 bg-background/50 backdrop-blur-sm border border-neutral-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary shadow-sm transition-all disabled:opacity-50"
             />
             <button
               type="submit"
-              className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+              disabled={status === 'loading' || status === 'success'}
+              className="flex justify-center items-center w-full px-4 py-3 bg-primary text-primary-foreground rounded-xl font-medium shadow-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all active:scale-[0.98] disabled:opacity-50"
             >
-              Subscribe
+              {status === 'loading' ? <RefreshCw className="h-5 w-5 animate-spin" /> : <span>Subscribe</span>}
             </button>
+            {/* Success/Error Comment - Managed by React State */}
+            {status === 'success' && (
+              <div className="absolute -bottom-8 left-0 right-0 text-green-600 dark:text-green-400 text-sm font-medium text-center">
+                Thanks for subscribing! We'll keep you posted. 🎉
+              </div>
+            )}
+            {status === 'error' && (
+              <div className="absolute -bottom-8 left-0 right-0 text-red-600 dark:text-red-400 text-sm font-medium text-center">
+                Error. Please try again.
+              </div>
+            )}
           </form>
           <p className="text-xs text-muted-foreground mt-4">
             We'll email you only for major updates. No spam.

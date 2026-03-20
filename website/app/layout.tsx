@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { Navbar, Footer } from '@/components';
 import { ThemeProvider } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
+import Script from 'next/script';
 import '@/styles/globals.css';
 import 'katex/dist/katex.min.css';
 

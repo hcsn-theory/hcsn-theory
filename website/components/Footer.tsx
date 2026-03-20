@@ -1,11 +1,41 @@
 "use client"
 
+import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Github, Twitter, Mail } from 'lucide-react';
+import { Github, Twitter, Mail, RefreshCw } from 'lucide-react';
 
 export function Footer() {
   const pathname = usePathname();
+  const [status, setStatus] = React.useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('loading');
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData);
+    
+    try {
+      const response = await fetch("https://send.pageclip.co/fhkaBJep2xriqtVYbDbUkFWLRtfS6xeD/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.pageclip.v1+json"
+        },
+        body: JSON.stringify(data)
+      });
+      if (response.ok) {
+        setStatus('success');
+      } else {
+        console.error("Pageclip Error:", await response.text());
+        setStatus('error');
+      }
+    } catch (err) {
+      console.error("Fetch Error:", err);
+      setStatus('error');
+    }
+  };
+
   if (pathname === '/simulation') return null;
 
   return (
@@ -74,15 +104,34 @@ export function Footer() {
               Subscribe to get updates on new simulation results and papers.
             </p>
             {/* Placeholder for newsletter form */}
-            <form className="flex space-x-2" onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={handleSubmit} className="relative flex space-x-2">
               <input
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                name="email"
+                required
+                disabled={status === 'loading' || status === 'success'}
+                className="flex h-9 w-full rounded-md border border-input bg-background/50 backdrop-blur-sm px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Enter your email"
                 type="email"
               />
-              <button className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
-                Subscribe
+              <button 
+                type="submit" 
+                disabled={status === 'loading' || status === 'success'}
+                className="inline-flex h-9 min-w-[100px] items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50 transition-transform active:scale-95"
+              >
+                {status === 'loading' ? <RefreshCw className="h-4 w-4 animate-spin" /> : <span>Subscribe</span>}
               </button>
+              
+              {/* Success Comment - Managed by React State */}
+              {status === 'success' && (
+                <div className="absolute -bottom-8 left-0 right-0 text-green-500 text-sm font-medium">
+                  Awesome! You are now subscribed. 🎉
+                </div>
+              )}
+              {status === 'error' && (
+                <div className="absolute -bottom-8 left-0 right-0 text-red-500 text-sm font-medium">
+                  Error subscribing. Please try again.
+                </div>
+              )}
             </form>
           </div>
         </div>

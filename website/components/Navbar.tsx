@@ -24,6 +24,7 @@ export function Navbar() {
     { label: "Figures", href: "/figures" },
     { label: "Roadmap", href: "/roadmap" },
     { label: "Contact", href: "/contact" },
+    { label: "Logs", href: "/logs" },
   ]
 
   return (
