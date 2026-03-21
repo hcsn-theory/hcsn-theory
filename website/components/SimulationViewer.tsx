@@ -947,12 +947,12 @@ export function SimulationViewer() {
       )}
 
       {/* HUD & Overlay Layer - Responsive scroll behavior */}
-      <div className="fixed inset-0 z-10 overflow-y-auto sm:overflow-hidden no-scrollbar sm:pointer-events-none">
+      <div className="fixed inset-0 z-10 overflow-y-auto sm:overflow-hidden no-scrollbar pointer-events-none">
         {/* Mobile Header Spacer - Immersive view with a 'swipe zone' at the bottom */}
         <div className="h-[88vh] sm:hidden pointer-events-none" />
 
         {/* Dashboard Panels Container - Mobile: translucent scroll sheet | Desktop: layout component */}
-        <div className="relative z-20 flex flex-col sm:contents bg-gradient-to-b from-transparent via-[#000208]/80 to-[#000208] sm:from-transparent sm:via-transparent sm:to-transparent px-4 pb-12 pt-8 sm:p-0 min-h-screen sm:min-h-0">
+        <div className="relative z-20 flex flex-col sm:contents bg-gradient-to-b from-transparent via-[#000208]/80 to-[#000208] sm:from-transparent sm:via-transparent sm:to-transparent px-4 pb-12 pt-8 sm:p-0 min-h-screen sm:min-h-0 pointer-events-auto sm:pointer-events-none">
         {/* Top Timer Overlay - Absolute positioning within the header area on mobile */}
         {status === 'LIVE' && !timeoutReached && (
           <div className="fixed sm:absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-[#000208]/40 border border-[#00ffb2]/10 backdrop-blur-sm px-6 py-2 rounded-full flex items-center gap-3 shadow-[0_0_15px_rgba(0,255,178,0.05)] hover:bg-[#000208]/90 hover:border-[#00ffb2]/30 hover:backdrop-blur-md transition-all duration-500 group pointer-events-auto">
