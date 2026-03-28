@@ -80,7 +80,6 @@ hcsn-theory/
 │   └── types/                                         # TypeScript interfaces
 │
 ├── figures/                                           # 📊 Simulation visualizations
-├── depgraph/                                          # Dependency graph tooling
 ├── MANIFESTO.md                                       # Project motivation & philosophy
 ├── WORKSPACE_STATUS.md                                # Full project status
 └── README.md
