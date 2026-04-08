@@ -148,22 +148,20 @@ Where:
 - $\tau_{\text{coexist}}$ is coexistence duration
 
 This quantity is:
+
 - Dimensionless
 - Rewrite-native
-- Non-conservative
+- **Empirical Coupling ($k$):** $182.1$ (Phase 12 calibration)
 - Environment-mediated
 
 ---
 
-## 10. Scattering and Deflection
+### 10.1 Scattering Geometry
 
-When two worldlines' rewrite supports overlap, observed outcomes include:
-- **Deflection:** Change in rewrite imbalance direction
-- **Annihilation:** Merge into single cluster
-- **Fusion:** Stable combined structure
-- **Pass-through:** Minimal mutual influence
+Empirical collision analysis reveals a significant **Back-Scattering Bias**.
 
-Momentum is conserved **statistically** across large ensembles, not exactly per event.
+- **Mean Deflection ($\theta$):** $71.5^\circ$
+- **Mechanism:** Stability flux dissipation at the threshold boundary.
 
 ---
 
@@ -220,12 +218,12 @@ This exhibits non-conservative dissipation to a shared environment, with no dire
 
 Across all tested runs:
 
-1. Interaction is **non-zero iff rewrite overlap exists**
-2. Interaction strength decreases with rewrite-distance $d_{AB}$
+1. Interaction is **non-zero iff rewrite overlap $\chi > 0.14$**
+2. Interaction strength $F_{AB}$ follows a piecewise decay: $F \sim k/\chi$
 3. Interaction is **asymmetric**
-4. Total ξ is **not conserved**
-5. Ω-modulated environment mediates dissipation and redistribution
-6. No action-reaction symmetry is observed
+4. Total ξ is **not conserved** (Stability Flux is the invariant)
+5. Ω-modulated environment mediates dissipation
+6. Mean deflection $\theta \approx 71.5^\circ$
 
 ---
 

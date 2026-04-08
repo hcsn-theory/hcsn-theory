@@ -47,6 +47,7 @@ $$Q_{\text{defect}} := \Delta \Omega$$
 **Observational law:** Defects occur preferentially during periods of structural instability (high Ω variance) and subsequently suppress further instability.
 
 Defects are **regulated instabilities**, not random noise. They exhibit:
+
 - Temporal clustering
 - Correlation with Ω fluctuations
 - Stabilizing feedback on local Ω
@@ -58,6 +59,7 @@ Defects are **regulated instabilities**, not random noise. They exhibit:
 ### Definition — Persistent Defect
 
 A defect is **persistent** if successive defect events:
+
 - Occur within bounded temporal separation (Δt < τ_correlation, where τ_correlation is the typical rewrite autocorrelation time)
 - Share correlated rewrite support (overlapping causal neighborhoods)
 - Exhibit bounded charge variation (|ΔQ| remains finite)
@@ -132,21 +134,23 @@ Particles are *what the network remembers*, not what it contains.
 | Ω Regime | Mean Lifetime | Interpretation |
 |----------|---------------|----------------|
 | Subcritical (Ω < 1.0) | τ < 100 steps | Unstable, transient |
-| Critical (Ω ≈ 1.1) | τ ∼ 10³ steps | Marginal stability |
-| Supercritical (Ω > 1.2) | τ > 10⁴ steps | Persistent structures |
+| Critical (Ω ≈ 1.1) | τ ∼ 10³–10⁴ steps | Power-law stability ($\alpha \approx 1.7 - 2.0$) |
+| Supercritical (Ω > 1.2) | τ > 10⁵ steps | Persistent topological knots |
 
 **Empirical result:** Long-lived worldlines correspond to particle-like behavior.
 
 ---
 
-## 6. Interaction (Minimal Definition)
+## 6. Interaction (Threshold-Gated)
 
-Two proto-objects **interact** if the rewrite statistics of one are measurably altered by the presence of the other, relative to isolated evolution.
+Two proto-objects **interact** if they achieve structural overlap above a critical threshold.
 
 **Observed interaction mechanisms:**
-- Rewrite competition (primary)
-- Cluster merging/annihilation
-- Deflection in interaction-graph distance
+
+- **Threshold Law:** $\Delta p \neq 0$ iff structural overlap $\chi > 0.14$
+- **Rewrite competition:** Primary driver of stability flux
+- **Deflection:** Change in directional bias
+- **Cluster merging/annihilation**
 
 Interaction is:
 - Asymmetric (no action-reaction symmetry)
@@ -202,7 +206,8 @@ The operational definitions above establish:
 All definitions and criteria in this document have been:
 - Operationally defined
 - Measured in simulation
-- Validated across parameter variations (Steps 11–14)
+- Validated across parameter variations (Steps 11–16)
+- **Phase 12 Update:** Formalized the **Topological Force Law** and threshold-gated interaction.
 - Found robust and reproducible
 
 **Open questions:**

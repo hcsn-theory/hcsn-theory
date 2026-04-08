@@ -13,7 +13,8 @@ HCSN is a framework for emergent physics built from the ground up — starting w
 
 📄 **[Read the Paper →](https://doi.org/10.55277/researchhub.fvahxvpt.1)**
 📺 **[Watch the Overview →](https://youtu.be/A0oh6Rlx03Y)**
-🔬 **[Explore the Simulation Repo →](https://github.com/hcsn-theory/hcsn-sim)**
+🔬 **[Explore the Simulation Repo (Rust) →](https://github.com/hcsn-theory/hcsn-rust)**
+🔬 **[Legacy Simulation Repo →](https://github.com/hcsn-theory/hcsn-sim)**
 
 ---
 
@@ -71,6 +72,7 @@ hcsn-theory/
 │   ├── 02_defects_worldlines_and_particles.md        # Emergent objects + identity (6.9 KB)
 │   ├── 03_emergent_dynamics_momentum_and_interaction.md  # Motion, mass, interaction (8.0 KB)
 │   ├── 04_geometry_dimension_uncertainty_and_limits.md   # Geometry + open problems (9.1 KB)
+│   ├── 05_emergence_of_particles.md                      # Mechanics of matter condensation [NEW]
 │   └── archive/                                       # 17 superseded / historical drafts
 │
 ├── website/                                           # 🌐 Next.js 14 research website
@@ -86,13 +88,13 @@ hcsn-theory/
 ```
 
 > ⚠️ This repository contains **no simulation code**.  
-> All numerical experiments are in the companion repo: [hcsn-sim →](https://github.com/hcsn-theory/hcsn-sim)
+> All numerical experiments are conducted in the high-performance **[hcsn-rust](https://github.com/hcsn-theory/hcsn-rust)** engine, which replaced the legacy `hcsn-sim` prototype in Phase 10.
 
 ---
 
-## The Four Canonical Documents
+## The Five Canonical Documents
 
-The entire HCSN theory is documented in exactly **four files**, designed to be read in order:
+The entire HCSN theory is documented in exactly **five files**, designed to be read in order:
 
 ### [01 — Axioms and Methodology](docs/01_axioms_and_methodology.md)
 Defines the five core axioms:
@@ -137,16 +139,26 @@ Documents the large-scale structure and known boundaries:
 
 ---
 
+### [05 — Emergence of Particles](docs/05_emergence_of_particles.md)
+Formalizes the transition from stochastic noise to persistent structure:
+- **The Three Pillars**: Suppression, Coherence-Gated Growth, and Boundary Tension
+- **Nucleation Threshold**: The maturity point $\tau_c \approx 600 - 1000$ steps
+- **Scale-Free Scaling**: Power-law lifetimes (critical range $\alpha \approx 1.7 - 2.0$)
+- **Kinematics**: Interaction phenomenology (Threshold-gated interaction $\chi > 0.14$, deflection $71.5^\circ$)
+
+---
+
 ## Validated Results (from Simulation)
 
 | Result | Status |
 |--------|--------|
 | Zero causality violations across all variants | ✅ Confirmed |
 | Finite emergent signal speed | ✅ Confirmed (~0.086–0.123 normalized) |
-| Phase transition at Ω ≈ 1.08–1.18 | ✅ Confirmed |
+| Phase transition at Ω ≈ 1.1 | ✅ Confirmed ($p=0.64, \gamma=2.2$) |
+| Threshold-Gated Interaction ($\chi_c = 0.14$) | ✅ Confirmed (Phase 12) |
+| Predictive Force Law ($k = 182.1$) | ✅ Confirmed (Phase 12) |
 | Persistent defect worldlines above critical Ω | ✅ Confirmed |
 | Uncertainty relation robust across parameter sweep | ✅ Confirmed |
-| Multiverse universality (5 rule variants) | ✅ Preliminary positive |
 
 ---
 
@@ -214,11 +226,12 @@ See [MANIFESTO.md](MANIFESTO.md) for the full motivation.
 | Milestone | Status |
 |-----------|--------|
 | Axiomatic foundation | ✅ Stable |
+| CPU-Efficient Core Migration (Rust) | ✅ Completed (Phase 10) |
+| Interaction Theory (Force Law) | ✅ Completed (Phase 12) |
 | Emergent objects (defects, worldlines, particles) | ✅ Empirically grounded |
 | Dynamics, momentum, interaction | ✅ Empirically supported |
 | Geometry and dimension | 🔄 Partial — open problems remain |
 | Physical correspondence (Standard Model, GR) | 🔬 Conjectural |
-| Documentation refactor | ✅ Completed Feb 2026 |
 
 ---
 
