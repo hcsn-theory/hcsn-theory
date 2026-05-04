@@ -109,7 +109,7 @@ Mass is **not** a conserved quantity in current simulations. It is a derived sta
 
 ## 7. Interaction (Operational Definition)
 
-Interaction is defined operationally via rewrite competition (see [docs/02_defects_worldlines_and_particles.md](docs/02_defects_worldlines_and_particles.md#6-interaction-minimal-definition)).
+Interaction is defined operationally via rewrite competition (see [docs/02_defects_worldlines_and_particles.md](02_defects_worldlines_and_particles.md#6-interaction-minimal-definition)).
 
 Interaction is:
 - Asymmetric (no guaranteed action-reaction)
@@ -165,21 +165,21 @@ Empirical collision analysis reveals a significant **Back-Scattering Bias**.
 
 ---
 
-## 11. Conservation Without Symmetry
+## 11. Fragile Emergent Conservation
 
-In HCSN, statistical conservation laws arise from **rewrite accounting**, not from assumed symmetries.
+In HCSN, statistical conservation laws arise from **rewrite accounting**, not from assumed symmetries. The v3.1 replication suite tested this across 9 unpatched universe seeds (up to 60k rewrites).
 
 **Mechanism:**
 - Rewrites create/destroy defect charge
 - Statistical balance emerges from closure tension
 - No exact conservation at microscopic level
 
-**Observed approximate conservation:**
-- Total defect charge (ΔΩ summed) exhibits bounded drift
-- Rewrite flux imbalance shows weak statistical balance
-- Environment absorbs imbalance via Ω-mediated dissipation
+**Observed Fragile Conservation:**
+- **Mean Spearman ρ:** $-0.4674 \pm 0.1642$
+- Momentum drift naturally drops as structural persistence increases, proving approximate conservation emerges from structure.
+- However, the effect fluctuates based on topological seed (worst-case $\rho = -0.24$), proving it is a *fragile* and statistical conservation, not an exact deterministic one.
 
-**Logical reversal:** Observed statistical conservation suggests underlying emergent symmetry, rather than symmetry axiomatically predicting exact conservation. Symmetry is **emergent**, not fundamental.
+**Logical reversal:** Observed statistical conservation suggests an underlying emergent symmetry, rather than a symmetry axiomatically dictating exact conservation. Symmetry is **fragile and emergent**, not fundamental.
 
 ---
 
@@ -201,7 +201,7 @@ This defines interaction-graph distance as the relevant separation measure for i
 
 ## 13. Environment-Mediated Interaction
 
-Interaction is not direct cluster-to-cluster coupling. Instead:
+Interaction is not direct cluster-to-coupling. Instead:
 
 $$\text{Cluster A} \leftrightarrow \text{Ω-modulated rewrite pool} \leftrightarrow \text{Cluster B}$$
 

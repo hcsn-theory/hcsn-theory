@@ -63,15 +63,14 @@ Where $S$ is the historic stability (time spent in a coherent state). This nonli
 
 ---
 
-## 4. Scaling Laws and Criticality
+## 4. Partial Correlation Collapse and Multi-Dimensionality
 
-Once the nucleation barrier is crossed, lifetimes follow a **Scale-Free Power Law**:
+Initial hypotheses suggested that the complex dynamics governing particle survival (stability, coherence, suppression, etc.) might formally collapse into a single 1D scalar variable ("Persistence"). 
 
-$$ P(\tau) \sim \tau^{-\alpha} $$
-
-In the critical regime, the exponent $\alpha$ resides in the stable range $[1.5, 2.5]$. Observations in the "Condensed Phase" show exponents as low as $0.47$, indicating structures that are effectively immortal within simulation timescales.
-
----
+The v3.1 rigorous Random Forest PCA analysis rejected this perfect collapse:
+- **Principal Component 1 (Persistence)** explains only **53.5%** of the survival variance.
+- Survival requires a *multi-dimensional* interplay of independent mechanisms. 
+- While "Matter is what the network remembers" remains true, the structural parameter space required to achieve that memory is complex, not reducible to a single number.
 
 ## 5. Interaction Phenomenology
 
