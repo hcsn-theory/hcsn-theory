@@ -152,6 +152,18 @@ Two proto-objects **interact** if they achieve structural overlap above a critic
 - **Deflection:** Change in directional bias
 - **Cluster merging/annihilation**
 
+### Interaction Thresholds
+
+Three distinct thresholds govern interaction detection:
+
+| Threshold | Value | Purpose | Code Location |
+|:----------|:------|:--------|:--------------|
+| Tracking | χ > 0.015 | Begin recording InteractionEvent | `rewrite_engine.rs` L866 |
+| Force onset | χ > 0.14 | Empirical onset of momentum exchange | Theory (Phase 12 data) |
+| Deep coupling | χ > 0.4 | Reduce rewrite protection (coupling_modifier = 0.2) | `rewrite_engine.rs` L945 |
+
+**Note:** The 0.015 filter prevents noise from triggering event recording. The 0.14 value is an empirical observation from Phase 12 data. The 0.4 threshold is a designed parameter.
+
 Interaction is:
 - Asymmetric (no action-reaction symmetry)
 - Environment-mediated (via Ω-modulated rewrite pool)
@@ -174,7 +186,9 @@ Interaction strength scales with rewrite flux imbalance, not spatial proximity.
 
 ## 8. Mass (Emergent)
 
-Mass is defined empirically as:
+Mass has two candidate definitions:
+
+### 8.1 Theoretical Definition
 
 $$m \sim \frac{1}{\text{Var}(p)}$$
 
@@ -183,6 +197,14 @@ where p is momentum (defined as rewrite imbalance persistence).
 **Interpretation:**
 - Long-lived worldlines → low momentum variance → high mass
 - Short-lived defects → high momentum variance → low mass
+
+### 8.2 Code Implementation
+
+$$m = |V| \times C^2$$
+
+where |V| is the vertex count and C is the coherence of the knot.
+
+**Status:** These are two candidate definitions. Their equivalence is an **open question**. The code implements 8.2. Definition 8.1 is a theoretical aspiration not yet validated against 8.2.
 
 Mass corresponds to **defect inertia**: resistance to rewrite-induced change.
 

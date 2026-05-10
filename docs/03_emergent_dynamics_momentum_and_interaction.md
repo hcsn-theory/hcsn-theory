@@ -1,18 +1,19 @@
 # Emergent Dynamics, Momentum, and Interaction in HCSN
 
-**Status:** Empirically supported  
+**Status:** Empirically supported at current simulation scale (≤250k steps, ≤5k vertices)  
 **Scope:** Motion, momentum, mass, and interaction without spacetime  
 **Basis:** Simulation evidence from Steps 1–16 (simulation milestones documented separately)
 
 ---
 
-## 1. Dynamics Without Space
+In HCSN, dynamics is defined as **relational structural transformation**. 
 
-In HCSN, dynamics is defined as **persistence and transformation under rewrite flow**.
+Following **Mach's Principle**, we assume no background space. Therefore, absolute position and absolute velocity do not exist. All kinematic properties (velocity, momentum, force) are defined purely by the **interaction between pairs of structures**.
 
-There is no background space in which objects move. There are no trajectories in a manifold. There is only:
+There is no manifold. There is only:
 - Rewrite sequences
 - Causal ordering
+- Structural overlap (Relational Distance)
 - Statistical persistence
 
 All motion is relational and historical.
@@ -50,50 +51,66 @@ No clock or continuous parameter is assumed.
 
 ---
 
-## 4. Rewrite Imbalance
+## 4. Relational Distance ($d_{AB}$)
 
-A worldline exhibits **rewrite imbalance** if rewrites occur preferentially on one side of its causal support over time.
+In a background-independent universe, distance is defined by structural overlap:
 
-**Operational measurement:**
-- Count rewrites in the causal future cone of each defect event
-- Compare "left" vs "right" rewrite asymmetry (in interaction graph)
-- Track directional bias over temporal windows
+$$d_{AB} = 1 - \chi$$
 
-Rewrite imbalance is directly observable in rewrite logs.
+where $\chi$ is the structural overlap ratio ($|A \cap B| / \min(|A|, |B|)$).
 
 ---
 
-## 5. Momentum (Unified Operational Definition)
+## 5. The Horizon Problem & Halo-Interaction
 
-Momentum is defined as the **statistical persistence of rewrite imbalance** across a finite temporal window.
+### 5.1 The Structural Horizon
+In a pure core-overlap model, particles are invisible to each other ($d_{AB} = 1$) until they physically touch. This creates a "Horizon Problem" where approach velocity is unmeasurable.
 
-**Equivalent operational measures:**
+### 5.2 Interaction Halos (Short-Range Potential)
+To solve this, HCSN utilizes **Halo-Interaction**:
+- **Halo ($H$):** The core vertices of a knot plus its 1-hop interaction neighborhood.
+- **Relational $\chi$:** Computed using the intersection of these expanded halos.
 
-### 5.1 Before/After Asymmetry
-
-$$p_1 := \langle n_{\text{after}} - n_{\text{before}} \rangle_{\Delta t}$$
-
-where $n$ counts rewrites in forward vs backward causal cones.
-
-### 5.2 Variance of Causal Displacement
-
-$$p_2 := \text{Var}(\Delta x_{\text{causal}})^{-1}$$
-
-Low variance → high persistence → high momentum.
-
-### 5.3 Rewrite Flux Persistence
-
-$$p_3 := \text{autocorrelation}(\Phi(t), \Phi(t+\tau))$$
-
-where $\Phi(t)$ is rewrite flux at time $t$.
-
-**Empirical result:** These three measures are operationally equivalent in simulation and produce consistent momentum assignments.
+**Physical Analogy:** This creates a short-range interaction potential similar to the **Strong Nuclear Force** (Yukawa potential). Particles "sense" each other when their halos overlap, allowing for approach tracking before core-collision.
 
 ---
 
-## 6. Mass
+## 6. Relational Velocity ($v_{rel}$)
 
-Mass is defined empirically as inverse momentum variance (see File 2, Section 8 for detailed definition):
+Relational velocity is the **instantaneous rate of change of structural overlap**:
+
+$$v_{rel} := \frac{d\chi}{dt}$$
+
+### 6.1 Stochastic Noise Filtering (EMA)
+Because rewrites are stochastic, the raw $\chi$ signal is noisy. HCSN implements an **Exponential Moving Average (EMA)** to filter background "quantum foam" jitter:
+
+$$v_{smoothed}(t) = \alpha \cdot v_{raw} + (1 - \alpha) \cdot v_{smoothed}(t-1)$$
+
+where $\alpha = 0.2$. This captures true kinematic trends (acceleration/recoil) while ignoring rewrite noise.
+
+### 6.2 The 1D Relational Regime (Scalar Limitation)
+Currently, $v_{rel}$ is a **scalar quantity**. It measures the rate of structural merging or recession but does NOT possess a direction (vector).
+
+**Consequences:**
+1. **No Scattering Angles:** In the current 1D regime, a "collision" is measured purely by intensity, not by deflection ($\theta$).
+2. **Dimensional Ambiguity:** Because HCSN has not yet proven its emergent dimensionality ($D$), we avoid ad-hoc coordinate reconstructions (like MDS).
+3. **Scalar Conservation:** Momentum conservation is currently tested as a scalar balance ($m_a v_a + m_b v_b = \text{const}$).
+
+**Future Path:** True vector kinematics will only be possible once a stable, emergent dimensionality is proven and a relational coordinate system is reconstructed from the distance matrix. Until then, HCSN operates in a **1D Relational Regime**.
+
+---
+
+## 7. Relational Momentum ($p_{rel}$)
+
+Relational momentum exists only **during an interaction event**:
+
+$$p_{rel} := m_{reduced} \cdot v_{rel\_smoothed}$$
+
+where $m_{reduced}$ is derived from the masses of the interacting knot pair. 
+
+**Note on Absolute Momentum:** Previous concepts of "Absolute Momentum" derived from vertex-ID labels are now deprecated as **Diagnostic Proxies** only. They do not represent physical motion in the Machian sense.
+
+Mass is defined empirically as inverse momentum variance (see File 2, Section 8 for detailed definition and the code implementation `m = |V| × C²`):
 
 $$m \sim \frac{1}{\text{Var}(p)}$$
 
@@ -104,6 +121,8 @@ $$m \propto \tau$$
 where $\tau$ is worldline lifetime.
 
 Mass is **not** a conserved quantity in current simulations. It is a derived statistical property of persistent worldlines.
+
+**Note:** The code implements `mass = vertex_count × coherence²`. The equivalence between this and the theoretical `m ~ 1/Var(p)` is an open question (see doc 02, Section 8).
 
 ---
 
@@ -122,6 +141,20 @@ Interaction is:
 ---
 
 ## 8. Rewrite Competition (Primary Interaction Mechanism)
+
+### 8.1 Continuous Relational Relief (Asymptotic Freedom)
+
+To resolve the **Crystalline Freeze** (where high-density knots become too rigid to interact), HCSN implements a **Relational Relief Function** $\Gamma(\chi)$. 
+
+This function reduces the rewrite suppression factor $\alpha_{eff}$ linearly as the structural overlap $\chi$ increases.
+
+$$\alpha_{eff}' = \alpha_{eff} \cdot [1.0 - 0.8 \cdot \min(1.0, \frac{\chi}{0.4})]$$
+
+This mechanism creates an emergent state of **Asymptotic Freedom**:
+1.  **Isolated Stability**: At $\chi=0$, knots are "frozen" and stable (High Confinement).
+2.  **Interactive Fluidity**: At $\chi \ge 0.4$, structural tension is "liquefied," allowing vertices to flow freely and exchange momentum (Asymptotic Freedom).
+
+This allows the HCSN engine to produce measurable relational velocities ($v_{rel} \approx 10^{-4}$) during collisions, overcoming the topological inertia of high-coherence motifs.
 
 Proto-particles compete for rewrite opportunities. Coexisting ξ-clusters suppress one another's rewrite participation.
 
@@ -167,19 +200,37 @@ Empirical collision analysis reveals a significant **Back-Scattering Bias**.
 
 ## 11. Fragile Emergent Conservation
 
-In HCSN, statistical conservation laws arise from **rewrite accounting**, not from assumed symmetries. The v3.1 replication suite tested this across 9 unpatched universe seeds (up to 60k rewrites).
+In HCSN, statistical conservation-like correlations arise from **rewrite accounting**, not from assumed symmetries.
+
+### 11.1 Unpatched Results (Baseline)
+
+The v3.1 replication suite tested 9 universe seeds with `HCSN_PATCHES=false` (no conservation corrections):
+
+- **Mean Spearman ρ:** $-0.4674 \pm 0.1642$
+- This is a **weak-to-moderate** statistical correlation (R² ≈ 0.22)
+- NOT exact conservation — no Δp = 0 observed at microscopic level
+- Worst-case seed: ρ = −0.24 (very weak)
 
 **Mechanism:**
 - Rewrites create/destroy defect charge
 - Statistical balance emerges from closure tension
 - No exact conservation at microscopic level
 
-**Observed Fragile Conservation:**
-- **Mean Spearman ρ:** $-0.4674 \pm 0.1642$
-- Momentum drift naturally drops as structural persistence increases, proving approximate conservation emerges from structure.
-- However, the effect fluctuates based on topological seed (worst-case $\rho = -0.24$), proving it is a *fragile* and statistical conservation, not an exact deterministic one.
+### 11.2 Patched Results (Hybrid Mode)
 
-**Logical reversal:** Observed statistical conservation suggests an underlying emergent symmetry, rather than a symmetry axiomatically dictating exact conservation. Symmetry is **fragile and emergent**, not fundamental.
+With `HCSN_PATCHES=true` (the default configuration), three engineered corrections are applied:
+
+- **Pairwise (Hyp A):** Symmetric momentum redistribution between interacting knots, strength ramps with stability
+- **FluxCompensated (Hyp C):** Momentum reservoir with diffusive re-absorption (α = 0.15, decay 0.999)
+- **StabilityScaled (Hyp B):** Inertial cooling via `v = v × exp(−S/30) + 0.05`
+
+These are **engineered corrections**, not emergent properties. They are explicitly flagged via the `HCSN_PATCHES` environment variable.
+
+### 11.3 Scientific Question
+
+Does the unpatched ρ ≈ −0.47 strengthen toward −1.0 at larger scales (>10⁶ vertices)? This is the key open question requiring larger-scale computation.
+
+**Logical reversal:** If statistical conservation strengthens at scale, this suggests an underlying emergent symmetry. Symmetry would be **fragile and emergent**, not fundamental. This remains unconfirmed.
 
 ---
 
@@ -218,8 +269,8 @@ This exhibits non-conservative dissipation to a shared environment, with no dire
 
 Across all tested runs:
 
-1. Interaction is **non-zero iff rewrite overlap $\chi > 0.14$**
-2. Interaction strength $F_{AB}$ follows a piecewise decay: $F \sim k/\chi$
+1. Interaction is **non-zero iff rewrite overlap $\chi > 0.14$** (empirical observation)
+2. Interaction strength $F_{AB}$ follows an **empirical scaling relation**: $F \sim k/\chi$ ($k = 182.1$, fit to Phase 12 data). This is a phenomenological observation, not a derived law.
 3. Interaction is **asymmetric**
 4. Total ξ is **not conserved** (Stability Flux is the invariant)
 5. Ω-modulated environment mediates dissipation
@@ -266,7 +317,36 @@ No claims beyond these are made at this stage.
 
 ---
 
-## 18. Forward Compatibility
+## 18. Emergence Classification
+
+| Property | Type | Mechanism | Verified In |
+|:---------|:-----|:----------|:------------|
+| Coherent subgraph formation | **Emergent** | Base rules only | Pure mode |
+| Knot persistence (>50 steps) | **Emergent** | Arises without memory | Pure mode |
+| F ~ k/χ force scaling | **Emergent** | Observed in all modes | Pure + Assisted |
+| Power-law lifetime distribution | **Assisted** | Requires stability memory (H8) | Assisted mode |
+| Momentum correlation ρ ≈ −0.47 | **Emergent (fragile)** | Unpatched runs | Baseline |
+| Deep coupling scattering | **Engineered** | coupling_modifier = 0.2 | Assisted mode |
+| Stronger conservation | **Engineered** | Requires Hybrid mode patches | Hybrid mode |
+
+**Definitions:**
+- **Emergent:** Arises from base rewrite rules without designed mechanisms
+- **Assisted:** Requires memory/feedback systems but not direct correction
+- **Engineered:** Requires explicit correction patches
+
+---
+
+## 19. Open Problems (Implementation)
+
+In addition to the theoretical open problems in doc 04, the following implementation gaps exist:
+
+1. **Positional proxy:** The code uses vertex-ID centroids as a position proxy. Proper metric embedding (graph geodesics, persistent homology, or MDS) is needed for rigorous kinematic claims.
+2. **Mass equivalence:** The two candidate mass definitions (1/Var(p) vs |V|×C²) have not been shown to be equivalent.
+3. **Scale dependence:** All results are at ≤250k steps / ≤5k vertices. Asymptotic behavior at 10⁶+ vertices is unknown.
+
+---
+
+## 20. Forward Compatibility
 
 This framework is designed to support future derivations of:
 - Emergent large-scale mechanics (low Ω variance)

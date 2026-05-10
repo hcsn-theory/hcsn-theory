@@ -35,6 +35,8 @@ The causal relation ⪯ must satisfy:
 
 This induces a directed acyclic graph (DAG) structure. Closed causal loops are forbidden.
 
+**Proof:** Suppose a cycle exists: a ⪯ b ⪯ ... ⪯ a. By repeated application of transitivity: a ⪯ a. This contradicts irreflexivity. Therefore no cycle of any length can exist, and the structure is a strict partial order (DAG). ∎
+
 **Consequence:** An emergent arrow of time.
 
 ---
@@ -156,3 +158,16 @@ Analogies to known physics are interpretative only, never identity claims.
 | Particles, fields | Future derivation |
 
 The axioms constrain dynamics without predetermining outcomes. Physics emerges from what persists.
+
+---
+
+## Appendix: Axiom-to-Code Mapping
+
+| Axiom | Implementation | File | Status |
+|:------|:---------------|:-----|:-------|
+| Axiom 0 (Hypergraph) | `Hypergraph` struct with `vertices`, `hyperedges`, `causal_future/past` | `hypergraph.rs` | Complete |
+| Axiom 1 (Causal DAG) | `add_causal_relation()` enforces acyclicity via `is_causally_related()` check; transitive closure maintained with `FixedBitSet` | `hypergraph.rs` | Complete |
+| Axiom 2 (Local rewrites) | `edge_creation_rule()` and `vertex_fusion_rule()` act on bounded neighborhoods only | `rules.rs` | Complete |
+| Axiom 3 (Finite cones) | `FixedBitSet` with capacity 524,288; `scrub_ghost_bits()` cleans stale references | `hypergraph.rs` | Complete |
+| Axiom 4 (Closure tension) | `propose_rewrite()` suppression formula: `rewrite_prob = exp(−α_eff × density)` | `rewrite_engine.rs` | Complete |
+| Axiom 5 (Defect permissibility) | No hard block on local Ω violations; defects form naturally from rewrite dynamics | `rewrite_engine.rs` | Complete |

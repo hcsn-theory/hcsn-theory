@@ -17,7 +17,7 @@ HCSN assumes at the axiomatic level:
 
 Geometry must emerge from rewrite statistics, or the theory predicts no geometry at all.
 
-**Current status:** Partial geometric structure is observed at large scales. Full reconstruction is incomplete.
+**Current status:** Partial geometric structure is observed at large scales. Full reconstruction is incomplete. To avoid ad-hoc engineered assumptions, HCSN currently operates in a **1D Relational Regime** (scalar kinematics) and avoids forcing 3D coordinate reconstructions (like MDS) until dimensionality (D) is proven.
 
 ---
 
@@ -32,6 +32,8 @@ The theory exhibits distinct **phase regimes** controlled by the hierarchical cl
 | Subcritical (Ω < 1.0) | Transient, τ < 100 | No transport | Unstable phase |
 | Critical (Ω ≈ 1.1) | Marginal, τ ∼ 10³–10⁴ | Power-law scaling | **Stable Phase ($p=0.64, \gamma=2.2$)** |
 | Supercritical (Ω > 1.2) | Persistent, τ > 10⁵ | Constant | Condensed Phase |
+
+**Terminology note:** Ω is used as an *order parameter* in the statistical mechanics sense: it *classifies* phase regimes but does not *drive* transitions. Knot persistence is caused by the stability memory system, not by Ω directly. Ω is a thermometer, not a heater.
 
 **Key result:** The transport field ξ propagates **only** in supercritical regimes. Ω itself does **not** propagate.
 
@@ -96,11 +98,19 @@ Effective dimension depends on:
 - Critical Ω: dimension fluctuates
 - Supercritical Ω: dimension shows signs of stabilization (preliminary measurements suggest finite effective dimension in approximate range 3–5, non-conclusive)
 
-**Status:** Suggestive but not conclusive. Full dimensional characterization requires longer simulations and may be subject to finite-size effects.
+**Status:** Suggestive but not conclusive. Full dimensional characterization requires longer simulations and may be subject to finite-size effects. Until D is proven, HCSN maintains a **scalar-only kinematic framework** to prevent ad-hoc spatial assumptions.
 
 ---
 
-## 6. Lifetime-Momentum Variance Relation
+## 6. The 1D Relational Regime
+Because dimensionality is not yet established, all current kinematic observables (velocity, momentum) are **scalars**.
+- **Approach/Recession:** We track how fast knots merge or separate.
+- **No Vectors:** Direction and scattering angles ($\theta$) are currently undefined.
+- **Relational Geometry:** Geometry is currently a 1D line of interaction intensities.
+
+---
+
+## 7. Lifetime-Momentum Variance Relation
 
 Observed empirical relation:
 
@@ -216,14 +226,14 @@ The theory fails if:
 
 ---
 
-## 12. Current Validated Results
+## 12. Current Observed Results
 
-✅ Hierarchical closure Ω is a valid order parameter  
+✅ Hierarchical closure Ω is a valid diagnostic order parameter  
 ✅ ξ transport exhibits phase transition at Ω ≈ 1.1  
 ✅ Defect worldlines persist and interact  
 ✅ Momentum and mass are operationally defined  
-✅ **Threshold-Gated Interaction ($\chi_c = 0.14$) validated**  
-✅ **Scattering Deflection ($\theta = 71.5^\circ$) validated**  
+✅ **Threshold-Gated Interaction ($\chi_c = 0.14$) observed across all tested runs**  
+⚠️ **Scattering Deflection ($\theta$) currently undefined in 1D Relational Regime**  
 ✅ No exact conservation laws at microscopic level  
 
 ---
