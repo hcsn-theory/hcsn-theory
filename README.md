@@ -1,4 +1,4 @@
-# 🧩 HCSN Theory — Hierarchical Causal Structure Networks
+# 🧩 HCSN Theory — Hierarchical Causal Structure Networks 
 
 [![DOI](https://img.shields.io/badge/DOI-10.55277%2Fresearchhub.fvahxvpt.1-blue)](https://doi.org/10.55277/researchhub.fvahxvpt.1)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
